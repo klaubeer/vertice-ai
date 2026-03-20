@@ -510,28 +510,6 @@ Documentos detalhados de:
 
 ---
 
-## Roadmap
-
-- [x] Definição da arquitetura e stack
-- [x] Documentação inicial (README)
-- [ ] Criação dos dados fictícios (estoque, funcionários, empresa)
-- [ ] Implementação do banco de dados (SQLite)
-- [ ] Pipeline RAG (indexação, retrieval, reranking)
-- [ ] Agente Roteador
-- [ ] Agente Cliente (RAG)
-- [ ] Agente Estoque (tool calling)
-- [ ] Agente RH (RAG)
-- [ ] Agente BI (tool calling)
-- [ ] Guardrails (injection, validação, PII)
-- [ ] Integração com LangFuse
-- [ ] Interface Streamlit (3 telas)
-- [ ] Avaliação do RAG (dataset + métricas)
-- [ ] Testes automatizados
-- [ ] Docker Compose
-- [ ] Screenshots e GIFs para o README
-
----
-
 ## English Summary
 
 **Vértice IA** is a multi-agent AI system built for a fictional Brazilian textile company. It demonstrates:
@@ -548,13 +526,4 @@ Documentos detalhados de:
 
 ---
 
-## Licença
 
-Este projeto está licenciado sob a [MIT License](LICENSE).
-
----
-
-<p align="center">
-  Desenvolvido por <strong>Seu Nome</strong> — Engenheiro de IA<br/>
-  <a href="https://linkedin.com/in/seu-perfil">LinkedIn</a> · <a href="https://github.com/seu-usuario">GitHub</a>
-</p>
