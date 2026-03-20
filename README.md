@@ -485,12 +485,11 @@ Esses dados alimentam o **Dashboard BI** (Tela 3) e permitem monitorar a saúde 
 
 ### Empresa
 
-A Vértice Commerce possui:
+A Vértice possui:
 - **3 plantas**: São Paulo (sede + CD), Campinas (fábrica), Curitiba (CD regional)
-- **8 lojas próprias**: 4 em SP, 2 no RJ, 1 em Curitiba, 1 em BH
-- **~280 funcionários**: 120 nas lojas, 60 na fábrica, 50 corporativo, 30 logística, 20 TI
-- **Faturamento anual**: ~R$ 45M
-- **E-commerce**: representa 35% do faturamento
+- **20 lojas próprias**: 8 em SP, 4 no RJ, 4 em Curitiba, 4 em Florianópolis
+- **~1000 funcionários**: 200 nas lojas, 700 na fábrica, 50 corporativo, 30 logística, 20 TI
+- **Faturamento anual**: ~R$ 900M
 
 ### Estoque
 
