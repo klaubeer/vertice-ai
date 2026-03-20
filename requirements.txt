@@ -1,0 +1,35 @@
+# LLM e Agentes
+anthropic>=0.42.0
+claude-agent-sdk>=0.1.0
+
+# RAG - Embeddings e Vetores
+chromadb>=0.5.0
+sentence-transformers>=3.0.0
+rank-bm25>=0.2.2
+
+# Reranqueamento
+torch>=2.0.0
+
+# Banco de dados
+sqlalchemy>=2.0.0
+
+# Observabilidade
+langfuse>=2.0.0
+
+# Frontend
+streamlit>=1.38.0
+plotly>=5.22.0
+streamlit-extras>=0.4.0
+
+# Utilitários
+python-dotenv>=1.0.0
+pandas>=2.2.0
+pydantic>=2.0.0
+rich>=13.0.0
+
+# Avaliação
+datasets>=2.0.0
+
+# Testes
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
