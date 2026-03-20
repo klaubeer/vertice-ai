@@ -56,14 +56,21 @@ def validar_resposta(
 
 def _classificar_nivel(score: float, qtd_problemas: int) -> str:
     """Classifica o nível de confiança da resposta.
-    Calibrado para o modelo mmarco-mMiniLMv2 (multilingual):
-    scores > 0.85 = match explícito, > 0.65 = match semântico bom.
+
+    Calibrado para o pipeline atual (embeddings multilingual + ms-marco reranker):
+    - score_vetorial do paraphrase-multilingual-MiniLM-L12-v2 para QA assimétrico
+      fica tipicamente em 0.30–0.55, gerando confiança final em 0.35–0.65.
+    - Thresholds ajustados para refletir esse range real do sistema.
+
+    ≥ 0.45 → alto  (match semântico bom, resposta fundamentada)
+    ≥ 0.30 → medio (match parcial, resposta provavelmente correta)
+    < 0.30 → baixo (baixa relevância, pode estar sem contexto)
     """
     if qtd_problemas > 0:
         return "baixo"
-    if score >= 0.85:
+    if score >= 0.45:
         return "alto"
-    if score >= 0.60:
+    if score >= 0.30:
         return "medio"
     return "baixo"
 

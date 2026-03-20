@@ -112,6 +112,7 @@ class PipelineRAG:
                 "documento": d["metadados"].get("documento", ""),
                 "secao": d["metadados"].get("secao", ""),
                 "score_reranqueamento": d.get("score_reranqueamento", 0),
+                "score_vetorial": d.get("score_vetorial", 0),
             }
             for d in documentos_reranqueados
         ]
@@ -146,24 +147,35 @@ class PipelineRAG:
 
     def _calcular_confianca(self, documentos: List[Dict]) -> float:
         """
-        Calcula confiança usando o score vetorial (cosine similarity) do top documento.
-        O score_vetorial já está em [0, 1] e é produzido pelo modelo multilingual
-        paraphrase-multilingual-MiniLM-L12-v2, bem calibrado para português.
-        O cross-encoder é usado apenas para ORDENAR os documentos, não para confiança.
+        Confiança multi-sinal: combina score vetorial + score RRF.
 
-        Faixas esperadas:
-        >= 0.85 → match explícito no documento
-        >= 0.65 → match semântico bom
-        < 0.50 → pouca relevância recuperada
+        O cross-encoder ms-marco NÃO é usado para confiança pois é treinado em
+        inglês e produz logits negativos comprimidos para texto em português,
+        tornando-o não confiável como proxy de relevância nesse idioma.
+
+        Fórmula: 0.7 * score_vetorial + 0.3 * score_rrf_normalizado
+        - score_vetorial: cosine similarity do modelo multilingual (0-1)
+        - score_rrf: normalizado para 0-1 escalando por 30 (RRF típico: 0.01-0.03)
+
+        Para docs sem score_vetorial (BM25-only): usa apenas score_rrf.
         """
         if not documentos:
             return 0.0
 
-        # Usa o score vetorial do top documento (pós-reranqueamento)
-        top_score_vetorial = documentos[0].get("score_vetorial", 0.0)
+        doc = documentos[0]
+        score_v   = doc.get("score_vetorial", 0.0) or 0.0
+        score_rrf = doc.get("score_rrf", 0.0) or 0.0
+        score_rrf_norm = min(1.0, score_rrf * 30)
 
-        # Garante que está em [0, 1]
-        return max(0.0, min(1.0, float(top_score_vetorial)))
+        # Nota: o cross-encoder ms-marco (inglês) gera logits muito negativos para PT-BR.
+        # Mesmo após sigmoid, o valor é ~0.002 — contribuição negligenciável.
+        # Por isso, CE NÃO entra na fórmula. Apenas score_vetorial (multilingual) e RRF.
+        if score_v > 0:
+            score = 0.7 * score_v + 0.3 * score_rrf_norm
+        else:
+            score = score_rrf_norm * 0.7
+
+        return round(max(0.0, min(1.0, score)), 4)
 
 
 # Instância global

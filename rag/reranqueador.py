@@ -5,6 +5,7 @@ Reordena os documentos recuperados por relevância real em relação à consulta
 
 from typing import List, Dict, Optional
 
+import numpy as np
 from sentence_transformers import CrossEncoder
 
 from configuracao.config import MODELO_RERANQUEADOR, TOP_K_RERANQUEAMENTO
@@ -46,8 +47,12 @@ class Reranqueador:
         # Prepara pares (consulta, documento) para o cross-encoder
         pares = [(consulta, doc["texto"]) for doc in documentos]
 
-        # Calcula scores
-        scores = self._modelo.predict(pares)
+        # Calcula scores com batch para reduzir latência
+        scores_raw = self._modelo.predict(pares, batch_size=16, show_progress_bar=False)
+
+        # Sigmoid: converte logits arbitrários em probabilidades 0-1
+        # Necessário pois ms-marco retorna logits negativos para texto PT-BR
+        scores = 1.0 / (1.0 + np.exp(-np.array(scores_raw)))
 
         # Associa scores aos documentos
         for i, doc in enumerate(documentos):

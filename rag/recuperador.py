@@ -123,14 +123,19 @@ class RecuperadorHibrido:
         for rank, doc in enumerate(resultados_vetorial):
             doc_id = doc["id"]
             scores_rrf[doc_id] = scores_rrf.get(doc_id, 0) + 1 / (k + rank + 1)
-            docs_por_id[doc_id] = doc
+            if doc_id not in docs_por_id:
+                docs_por_id[doc_id] = doc.copy()
+            else:
+                docs_por_id[doc_id].update(doc)  # preserva score_vetorial mesmo se BM25 veio antes
 
         # Score do ranking BM25
         for rank, doc in enumerate(resultados_bm25):
             doc_id = doc["id"]
             scores_rrf[doc_id] = scores_rrf.get(doc_id, 0) + 1 / (k + rank + 1)
             if doc_id not in docs_por_id:
-                docs_por_id[doc_id] = doc
+                docs_por_id[doc_id] = doc.copy()
+            else:
+                docs_por_id[doc_id].update(doc)  # preserva score_bm25 sem apagar score_vetorial
 
         # Ordena por score RRF
         ids_ordenados = sorted(scores_rrf, key=scores_rrf.get, reverse=True)

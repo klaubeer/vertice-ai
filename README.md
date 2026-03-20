@@ -35,6 +35,7 @@
 - [Observabilidade](#observabilidade)
 - [Dados Fictícios](#dados-fictícios)
 - [Roadmap](#roadmap)
+- [Integrações](#integrações)
 - [English Summary](#english-summary)
 - [Licença](#licença)
 
@@ -182,7 +183,28 @@ graph LR
 | Fusão | Reciprocal Rank Fusion | Combina rankings das duas buscas |
 | Reranqueamento | Cross-encoder (ms-marco-MiniLM) | Reordena por relevância semântica real |
 | Geração | Claude API (Anthropic SDK) | Gera resposta fundamentada no contexto selecionado |
-| Validação | Score de confiança customizado | Verifica se a resposta está grounded |
+| Validação | Score de confiança calibrado | Converte logits do cross-encoder em buckets de confiança |
+
+### Score de Confiança — Calibração para Português
+
+O reranqueador utiliza o modelo `cross-encoder/ms-marco-MiniLM-L-6-v2`, que foi treinado em inglês (MS MARCO). Para texto em português, os logits de saída ficam em uma faixa comprimida e tipicamente negativa, diferente do comportamento em inglês.
+
+**Problema:** usar os logits diretamente produziria scores de confiança baixos mesmo para respostas corretas e bem fundamentadas (por exemplo, uma resposta perfeita sobre a política de devolução recebia logit `-6.08`).
+
+**Solução adotada — sistema de buckets calibrado empiricamente:**
+
+```
+Logit do cross-encoder  →  Score de confiança
+─────────────────────────────────────────────
+logit ≥  2.0            →  0.95  (match explícito / muito relevante)
+logit ≥  0.5            →  0.82  (match semântico bom)
+logit ≥ -1.0            →  0.65  (match fraco mas existente)
+logit <  -1.0           →  0.30  (pouca relevância encontrada)
+```
+
+Essa calibração foi derivada observando o comportamento real do modelo com consultas em português, garantindo que respostas corretas recebam scores adequados sem perder a capacidade de discriminar baixa relevância.
+
+> **Nota técnica:** Uma alternativa seria traduzir a consulta para inglês antes do reranqueamento, mas como os documentos permanecem em português, o ganho seria marginal. A abordagem de buckets é mais direta e eficaz para este caso de uso.
 
 ---
 
@@ -274,7 +296,7 @@ Status: ✅ Estoque adequado.
 | **Embeddings** | sentence-transformers (multilingual) | Embeddings em português de alta qualidade |
 | **Banco vetorial** | ChromaDB | Leve, sem infra extra, ideal para MVP |
 | **Busca léxica** | rank_bm25 | BM25 puro em Python, complementa busca vetorial |
-| **Reranqueamento** | Cross-encoder (ms-marco-MiniLM) | Reranqueamento semântico preciso |
+| **Reranqueamento** | Cross-encoder (ms-marco-MiniLM) | Reranqueamento semântico + calibração de confiança para PT-BR |
 | **Banco relacional** | SQLite | Zero configuração, suficiente para MVP |
 | **Observabilidade** | LangFuse | Open source, traces completos, dashboards nativos |
 | **Frontend** | Streamlit | Prototipagem rápida com visual profissional |
@@ -510,17 +532,35 @@ Documentos detalhados de:
 
 ---
 
+## Integrações
+
+O núcleo do sistema (roteador + agentes + RAG + guardrails) é completamente **independente de canal**. O frontend Streamlit é apenas um dos possíveis clientes — os agentes expõem uma interface Python simples que pode ser chamada por qualquer camada de transporte:
+
+| Canal | Como integrar |
+|---|---|
+| **WhatsApp** | Webhook via Twilio, Meta Cloud API ou Evolution API |
+| **Telegram** | python-telegram-bot + webhook |
+| **Slack** | Slack Bolt SDK + eventos de mensagem |
+| **Omnichannel corporativo** | API REST (FastAPI/Flask) sobre os agentes |
+| **API própria** | Wrapper REST direto — 1 endpoint `/chat` recebe `{mensagem, perfil}` e retorna `{resposta, agente, score, fontes}` |
+
+> A lógica de roteamento, RAG e guardrails não muda — apenas o adaptador de entrada/saída é trocado por canal.
+
+---
+
 ## English Summary
 
 **Vértice IA** is a multi-agent AI system built for a fictional Brazilian textile company. It demonstrates:
 
 - **Multi-agent orchestration** using Claude Agent SDK — a router agent classifies user intent and delegates to specialized agents (Customer Service, Inventory, HR, BI)
-- **Advanced RAG pipeline** — Hybrid Retrieval (vector + BM25), semantic reranking with cross-encoders, confidence scoring, and source attribution
+- **Advanced RAG pipeline** — Hybrid Retrieval (vector + BM25), semantic reranking with cross-encoders (`ms-marco-MiniLM`), empirically calibrated confidence scoring for Portuguese text, and source attribution
 - **Tool calling** — agents query a SQLite database for real-time inventory and analytics data
 - **Guardrails** — prompt injection detection, response grounding validation, PII filtering, and human fallback
 - **Observability** — full tracing with LangFuse (latency, tokens, confidence, user feedback)
 - **RAG evaluation** — 30-question benchmark with faithfulness, relevance, and correctness metrics
 - **BI Dashboard** — analytics on AI-handled interactions, resolution rates, common questions, and inventory alerts
+
+The agent core is **channel-agnostic**: the Streamlit UI is one possible client, but the same routing + RAG + guardrails logic can be plugged into WhatsApp, Telegram, Slack, or any corporate omnichannel platform via a simple REST adapter.
 
 **Tech stack**: Claude API (Anthropic SDK), Claude Agent SDK, ChromaDB, rank_bm25, cross-encoder reranking, SQLite, LangFuse, Streamlit, Docker Compose.
 

@@ -17,6 +17,10 @@ from ferramentas.consulta_estoque import obter_estoque_critico, resumo_estoque_p
 
 def renderizar():
     """Renderiza o dashboard BI."""
+    # Força scroll para o topo ao carregar a página
+    import streamlit.components.v1 as components
+    components.html("<script>window.parent.scrollTo(0, 0);</script>", height=0)
+
     st.markdown('<p class="main-header">📊 Dashboard BI</p>', unsafe_allow_html=True)
     st.markdown(
         '<p class="sub-header">Métricas de atendimento e performance do sistema</p>',
@@ -185,10 +189,10 @@ def renderizar():
         fig = px.bar(
             df_top,
             x="nome",
-            y="deficit",
-            color="loja",
+            y="deficit_total",
+            color="categoria",
             title="Top 10 — Maior Déficit de Estoque",
-            labels={"deficit": "Unidades abaixo do mínimo", "nome": "Produto"},
+            labels={"deficit_total": "Unidades abaixo do mínimo", "nome": "Produto"},
         )
         fig.update_layout(xaxis_tickangle=-45, height=350)
         st.plotly_chart(fig, use_container_width=True)

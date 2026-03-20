@@ -62,14 +62,12 @@ def consultar_estoque(
             {
                 "sku": r.sku,
                 "nome": r.nome,
-                "categoria": r.categoria,
-                "cor": r.cor,
                 "tamanho": r.tamanho,
-                "preco": r.preco,
+                "cor": r.cor,
                 "loja": r.loja,
                 "quantidade": r.quantidade,
                 "estoque_minimo": r.estoque_minimo,
-                "estoque_critico": r.estoque_critico,
+                "critico": r.quantidade < r.estoque_minimo,
             }
             for r in resultados
         ]

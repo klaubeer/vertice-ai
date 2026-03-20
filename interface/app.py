@@ -80,6 +80,17 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+PAGINAS = [
+    "🏠 Início",
+    "💬 Chat com Agente",
+    "📦 Estoque e Políticas",
+    "📊 Dashboard BI",
+]
+
+# Garante que a sessão inicia na página Início
+if "pagina" not in st.session_state:
+    st.session_state.pagina = "🏠 Início"
+
 # Sidebar — navegação
 with st.sidebar:
     st.markdown("## 🔷 Vértice IA")
@@ -89,30 +100,10 @@ with st.sidebar:
     st.markdown("**🗂️ Navegue por aqui**")
     pagina = st.radio(
         "Navegação",
-        [
-            "💬 Chat com Agente",
-            "📦 Estoque e Políticas",
-            "📊 Dashboard BI",
-        ],
+        PAGINAS,
+        key="pagina",
         label_visibility="collapsed",
     )
-
-    st.divider()
-
-    # Mini-README na sidebar
-    st.markdown("### 🧠 O que é isso?")
-    st.markdown("""
-Demonstração de um **sistema multi-agente com RAG** capaz de atender automaticamente clientes, funcionários e gestores — sem intervenção humana.
-
-**Agentes ativos:**
-- 🟣 **Cliente** — políticas de devolução, envio e garantia
-- 🔵 **Estoque** — consultas em tempo real via SQL
-- 🟢 **RH** — benefícios, férias, normas internas
-- 🟠 **BI** — métricas de atendimento e performance
-
-**Stack:**
-Claude API · RAG Híbrido · BM25 · Reranking · Guardrails · SQLite · ChromaDB
-""")
 
     st.divider()
     st.markdown(
@@ -120,8 +111,151 @@ Claude API · RAG Híbrido · BM25 · Reranking · Guardrails · SQLite · Chrom
         unsafe_allow_html=True,
     )
 
+
+def _ir_para(destino: str):
+    st.session_state.pagina = destino
+
+
+def renderizar_inicio():
+    st.markdown("""
+    <div style="text-align:center; padding: 2rem 0 1rem 0;">
+        <p style="font-size:3rem; margin:0;">🔷</p>
+        <h1 style="font-size:2.4rem; font-weight:800; color:#6C5CE7; margin:0.2rem 0;">Vértice IA</h1>
+        <p style="font-size:1.1rem; color:#636e72; margin:0.3rem 0 0.1rem 0;">
+            Sistema Multi-Agente de Atendimento Autônomo
+        </p>
+        <p style="font-size:0.85rem; color:#b2bec3;">
+            Moda urbana · 20 lojas · ~1.000 funcionários · R$ 900M/ano
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # Cards das 3 telas
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("""
+        <div style="border:2px solid #6C5CE7; border-radius:12px; padding:1.2rem; min-height:200px;">
+            <p style="font-size:2rem; margin:0;">💬</p>
+            <h3 style="color:#6C5CE7; margin:0.3rem 0;">Chat com Agente</h3>
+            <p style="font-size:0.85rem; color:#636e72; margin:0.5rem 0 1rem 0;">
+                Converse com agentes especializados em atendimento ao cliente, estoque, RH e métricas.
+                Guardrails ativos e score de confiança em tempo real.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.button("Abrir Chat →", key="btn_chat", use_container_width=True,
+                  on_click=_ir_para, args=("💬 Chat com Agente",))
+
+    with col2:
+        st.markdown("""
+        <div style="border:2px solid #0984E3; border-radius:12px; padding:1.2rem; min-height:200px;">
+            <p style="font-size:2rem; margin:0;">📦</p>
+            <h3 style="color:#0984E3; margin:0.3rem 0;">Estoque e Políticas</h3>
+            <p style="font-size:0.85rem; color:#636e72; margin:0.5rem 0 1rem 0;">
+                Consulte o estoque em tempo real por produto, tamanho, cor e loja.
+                Visualize as políticas de devolução, envio e garantia.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.button("Ver Estoque →", key="btn_estoque", use_container_width=True,
+                  on_click=_ir_para, args=("📦 Estoque e Políticas",))
+
+    with col3:
+        st.markdown("""
+        <div style="border:2px solid #E17055; border-radius:12px; padding:1.2rem; min-height:200px;">
+            <p style="font-size:2rem; margin:0;">📊</p>
+            <h3 style="color:#E17055; margin:0.3rem 0;">Dashboard BI</h3>
+            <p style="font-size:0.85rem; color:#636e72; margin:0.5rem 0 1rem 0;">
+                KPIs de atendimento, taxa de resolução autônoma, estoque crítico e
+                performance por agente — alimentado pelos atendimentos reais.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.button("Ver Dashboard →", key="btn_bi", use_container_width=True,
+                  on_click=_ir_para, args=("📊 Dashboard BI",))
+
+    st.divider()
+
+    # Sobre o projeto
+    col_a, col_b = st.columns([3, 2])
+
+    with col_a:
+        st.markdown("### 🧠 Como funciona")
+        st.markdown("""
+O usuário faz uma pergunta em linguagem natural. O **Agente Roteador** classifica a intenção e
+delega ao agente especializado correto:
+
+| Agente | Método | Casos de uso |
+|---|---|---|
+| 🟣 **Cliente** | RAG Híbrido | Devoluções, envio, garantia |
+| 🔵 **Estoque** | Tool Calling (SQL) | Disponibilidade por loja/tamanho |
+| 🟢 **RH** | RAG Híbrido | Férias, benefícios, normas |
+| 🟠 **BI** | Tool Calling (SQL) | KPIs, métricas, atendimentos |
+
+Guardrails bloqueiam **prompt injection** e mascaram **dados sensíveis (PII)** antes de
+qualquer chamada ao LLM.
+        """)
+
+    with col_b:
+        st.markdown("### ⚙️ Stack Técnica")
+        st.markdown("""
+**LLM**
+Claude API · Haiku 3.5
+
+**RAG**
+ChromaDB · BM25 · RRF
+Cross-Encoder Reranking
+Embeddings Multilingual
+
+**Dados**
+SQLite · 15 SKUs × 20 lojas
+Políticas em Markdown
+
+**Frontend**
+Streamlit · Plotly
+
+**Segurança**
+Detecção de Injection
+Filtro de PII
+Validação de Resposta
+        """)
+
+    st.divider()
+
+    # Seção de integrações
+    st.markdown("### 🔌 Pronto para Integração")
+    st.caption("Os agentes expõem uma API REST simples e podem ser conectados a qualquer canal de atendimento.")
+
+    ci1, ci2, ci3, ci4, ci5 = st.columns(5)
+    with ci1:
+        st.markdown("📱\n\n**WhatsApp**")
+    with ci2:
+        st.markdown("✈️\n\n**Telegram**")
+    with ci3:
+        st.markdown("💼\n\n**Slack**")
+    with ci4:
+        st.markdown("🏢\n\n**Omnichannel**")
+    with ci5:
+        st.markdown("⚙️\n\n**API própria**")
+
+    st.caption("A lógica de roteamento, RAG e guardrails é independente do canal — o Streamlit é apenas um dos possíveis clientes.")
+
+    st.divider()
+    st.markdown(
+        "<p style='text-align:center; color:#b2bec3; font-size:0.8rem;'>"
+        "Projeto de portfólio · Dados fictícios · "
+        "Powered by <strong>Klauber Fischer</strong></p>",
+        unsafe_allow_html=True,
+    )
+
+
 # Roteamento de páginas
-if pagina == "💬 Chat com Agente":
+if pagina == "🏠 Início":
+    renderizar_inicio()
+elif pagina == "💬 Chat com Agente":
     from interface.pagina_chat import renderizar
     renderizar()
 elif pagina == "📦 Estoque e Políticas":

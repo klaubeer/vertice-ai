@@ -88,7 +88,9 @@ def _formatar_fontes(fontes: list) -> str:
     for f in fontes:
         doc = f.get("documento", "")
         secao = f.get("secao", "")
-        score = f.get("score_reranqueamento", 0)
+        # Usa score_vetorial (multilingual, calibrado) em vez do score_reranqueamento
+        # (ms-marco inglês → sigmoid ~0.002 para PT-BR, sempre aparece como 0.00)
+        score = f.get("score_vetorial") or f.get("score_reranqueamento", 0)
         linha = f"📄 `{doc}`"
         if secao:
             linha += f" — {secao}"
@@ -277,7 +279,9 @@ def renderizar():
                 st.write(pergunta_pendente)
             with st.chat_message("assistant"):
                 with st.spinner("Analisando e gerando resposta..."):
-                    resposta_final = _processar_pergunta(pergunta_pendente)
+                    resposta_final, classificacao = _processar_pergunta(pergunta_pendente)
+
+            _salvar_atendimento(pergunta_pendente, resposta_final, classificacao)
 
             msg_id = f"msg_{int(time.time())}"
             st.session_state.mensagens = [
