@@ -2,7 +2,7 @@
   <img src="docs/imagens/banner.png" alt="Vértice IA" width="800"/>
 </p>
 
-<h1 align="center">Vértice IA — Sistema Multi-Agente para Indústria Têxtil</h1>
+<h1 align="center">Vértice IA — Sistema Multi-Agente para Comércio/Indústria</h1>
 
 <p align="center">
   <strong>Atendimento autônomo inteligente com RAG avançado, orquestração multi-agente e observabilidade</strong>
@@ -11,12 +11,10 @@
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.11+-blue?logo=python&logoColor=white" alt="Python"/>
   <img src="https://img.shields.io/badge/Claude_API-Anthropic-blueviolet?logo=anthropic&logoColor=white" alt="Claude API"/>
-  <img src="https://img.shields.io/badge/Agent_SDK-Claude-blueviolet" alt="Agent SDK"/>
-  <img src="https://img.shields.io/badge/RAG-Hybrid_Retrieval-green" alt="RAG"/>
+   <img src="https://img.shields.io/badge/RAG-Hybrid_Retrieval-green" alt="RAG"/>
   <img src="https://img.shields.io/badge/frontend-Streamlit-red?logo=streamlit&logoColor=white" alt="Streamlit"/>
   <img src="https://img.shields.io/badge/observabilidade-LangFuse-orange" alt="LangFuse"/>
-  <img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="License"/>
-</p>
+  </p>
 
 ---
 
@@ -58,7 +56,7 @@ O sistema utiliza **RAG avançado** (Hybrid Retrieval + Semantic Reranking) para
 
 ### Por que este projeto existe?
 
-Na indústria têxtil brasileira, equipes de atendimento lidam com alto volume de perguntas repetitivas — sobre políticas, estoque e processos internos. Este sistema demonstra como agentes de IA especializados podem absorver essa demanda, liberando pessoas para tarefas de maior valor.
+No e-commerce, equipes de atendimento lidam com alto volume de perguntas repetitivas — sobre políticas, estoque e processos internos. Este sistema demonstra como agentes de IA especializados podem absorver essa demanda, liberando pessoas para tarefas de maior valor.
 
 ---
 
