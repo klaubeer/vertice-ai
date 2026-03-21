@@ -58,7 +58,7 @@ O sistema utiliza **RAG avançado** (Hybrid Retrieval + Semantic Reranking) para
 
 ### Por que este projeto existe?
 
-No e-commer equipes de atendimento lidam com alto volume de perguntas repetitivas — sobre políticas, estoque e processos internos. Este sistema demonstra como agentes de IA especializados podem absorver essa demanda, liberando pessoas para tarefas de maior valor.
+No e-commerce, equipes de atendimento lidam com alto volume de perguntas repetitivas — sobre políticas, estoque e processos internos. Este sistema demonstra como agentes de IA especializados podem absorver essa demanda, liberando pessoas para tarefas de maior valor.
 
 ---
 
