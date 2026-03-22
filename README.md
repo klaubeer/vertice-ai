@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="docs/imagens/banner.png" alt="Vértice IA" width="800"/>
-</p>
-
 <h1 align="center">Vértice IA — Sistema Multi-Agente para Comércio/Indústria</h1>
 
 <p align="center">
@@ -444,16 +440,6 @@ python -m rag.indexador
 streamlit run interface/app.py
 ```
 
-### Comandos úteis (Makefile)
-
-```bash
-make run          # Sobe a aplicação
-make indexar      # Reindexar documentos no RAG
-make avaliar      # Rodar avaliação do RAG
-make testes       # Rodar testes automatizados
-make limpar       # Limpar banco e índices
-```
-
 ---
 
 ## Avaliação do RAG
@@ -544,6 +530,10 @@ O núcleo do sistema (roteador + agentes + RAG + guardrails) é completamente **
 
 > A lógica de roteamento, RAG e guardrails não muda — apenas o adaptador de entrada/saída é trocado por canal.
 
+## Autor
+
+Klauber Fischer
+
 ---
 
 ## English Summary
@@ -563,5 +553,9 @@ The agent core is **channel-agnostic**: the Streamlit UI is one possible client,
 **Tech stack**: Claude API (Anthropic SDK), Claude Agent SDK, ChromaDB, rank_bm25, cross-encoder reranking, SQLite, LangFuse, Streamlit, Docker Compose.
 
 ---
+
+## Autor
+
+Klauber Fischer
 
 
