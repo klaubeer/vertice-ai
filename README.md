@@ -206,10 +206,6 @@ Essa calibração foi derivada observando o comportamento real do modelo com con
 
 ### Tela 1 — Chat com Agente
 
-<p align="center">
-  <img src="docs/imagens/tela_chat.png" alt="Chat" width="700"/>
-</p>
-
 - Conversa em linguagem natural com o sistema multi-agente
 - Identificação do perfil do usuário (cliente, vendedor, gerente, RH)
 - Indicador visual de **qual agente** está respondendo
@@ -219,20 +215,12 @@ Essa calibração foi derivada observando o comportamento real do modelo com con
 
 ### Tela 2 — Consulta de Estoque e Políticas
 
-<p align="center">
-  <img src="docs/imagens/tela_estoque.png" alt="Estoque" width="700"/>
-</p>
-
 - Tabela interativa com filtros por categoria, cor, tamanho e loja
 - Indicadores visuais de estoque crítico (abaixo do mínimo)
 - Visualização das políticas de devolução, envio e garantia
 - Busca textual nas políticas
 
 ### Tela 3 — Dashboard BI para Gestores
-
-<p align="center">
-  <img src="docs/imagens/tela_dashboard.png" alt="Dashboard" width="700"/>
-</p>
 
 - Total de atendimentos realizados pela IA
 - Taxa de resolução autônoma vs. encaminhamento humano
