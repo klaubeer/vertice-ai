@@ -95,7 +95,7 @@ Pergunta do usuário
     │
     ▼
 ┌─────────────────┐
-│ Agente Roteador  │  ← Classifica intenção + perfil do usuário
+│ Agente Roteador │  ← Classifica intenção + perfil do usuário
 └────────┬────────┘
          │
     ┌────┴────┐
