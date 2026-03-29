@@ -4,7 +4,6 @@ services:
   vertice-ia:
     build: .
     container_name: vertice-ia
-    # Porta não exposta externamente — tráfego só via Nginx
     expose:
       - "8501"
     env_file:
@@ -13,51 +12,27 @@ services:
       - ./banco:/app/banco
       - ./dados:/app/dados
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vertice.rule=Host(`vertice.klauberfischer.online`)"
+      - "traefik.http.routers.vertice.entrypoints=websecure"
+      - "traefik.http.routers.vertice.tls.certresolver=letsencrypt"
+      - "traefik.http.services.vertice.loadbalancer.server.port=8501"
+      - "traefik.docker.network=proxy"
     networks:
+      - proxy
       - vertice-net
-
-  nginx:
-    image: nginx:alpine
-    container_name: vertice-nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./nginx/certbot/conf:/etc/letsencrypt:ro
-      - ./nginx/certbot/www:/var/www/certbot:ro
-    depends_on:
-      - vertice-ia
-    restart: unless-stopped
-    networks:
-      - vertice-net
-
-  certbot:
-    image: certbot/certbot
-    container_name: vertice-certbot
-    volumes:
-      - ./nginx/certbot/conf:/etc/letsencrypt
-      - ./nginx/certbot/www:/var/www/certbot
-    # Roda manualmente para obter/renovar certificado
-    entrypoint: >
-      certbot certonly
-        --webroot
-        --webroot-path=/var/www/certbot
-        --email klaubeer@gmail.com
-        --agree-tos
-        --no-eff-email
-        -d vertice.klauberfischer.online
 
   langfuse:
     image: langfuse/langfuse:2
     container_name: vertice-langfuse
-    # Exposto apenas localmente — acesse via SSH tunnel: ssh -L 3000:localhost:3000 user@vps
+    # Acesse via SSH tunnel: ssh -L 3000:localhost:3000 user@vps-ip
     ports:
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3000"
     environment:
       - DATABASE_URL=postgresql://langfuse:langfuse@langfuse-db:5432/langfuse
       - NEXTAUTH_SECRET=${LANGFUSE_SECRET}
-      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL=http://localhost:3001
       - SALT=${LANGFUSE_SALT}
     depends_on:
       - langfuse-db
@@ -82,5 +57,7 @@ volumes:
   langfuse_data:
 
 networks:
+  proxy:
+    external: true
   vertice-net:
     driver: bridge
