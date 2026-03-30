@@ -1,4 +1,4 @@
-<h1 align="center">Vértice IA — Sistema Multi-Agente para Comércio/Indústria</h1>
+<h1 align="center">Vértice IA — Sistema Multi-Agente para E-commerce/Indústria</h1>
 
 <p align="center">
   <strong>Atendimento autônomo inteligente com RAG avançado, orquestração multi-agente e observabilidade</strong>
