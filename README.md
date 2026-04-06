@@ -1,3 +1,5 @@
+[English version here](README-EN.md)
+
 <h1 align="center">Vértice IA — Sistema Multi-Agente para Comércio/Indústria</h1>
 
 <p align="center">
